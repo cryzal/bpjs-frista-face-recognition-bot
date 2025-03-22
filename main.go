@@ -19,7 +19,7 @@ const (
 	port            = ":3006"
 	LoginWindowName = "Login Frista (Face Recognition BPJS Kesehatan)"
 	MainWindowName  = "Frista (Face Recognition BPJS Kesehatan) 3.0.2"
-	TimeoutDuration = 10 * time.Second
+	TimeoutDuration = 30 * time.Second
 
 )
 
@@ -109,6 +109,9 @@ func main() {
 		if err := waitForWindow(LoginWindowName, 10*time.Second); err != nil {
 			return c.Status(500).JSON(fiber.Map{"message": "Aplikasi tidak terbuka dalam batas waktu"})
 		}
+
+		refocusApplication(LoginWindowName)
+
 
 		// Input Username & Password
 

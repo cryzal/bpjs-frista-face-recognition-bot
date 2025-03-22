@@ -7,8 +7,9 @@ Rest Api untuk membuka aplikasi frista BPJS. Digunakan untuk implementasi APM (A
 untuk membuat exe
 
 ```bash
-go build -o FingerprintBot.exe main.go
+go build -o FristaBot.exe main.go
 ```
+letakkan file exe ini di folder instalasi. sejajar dengan file 'frista.exe'
 
 ## Dokumentasi Rest API
 
