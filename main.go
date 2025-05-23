@@ -20,7 +20,6 @@ const (
 	LoginWindowName = "Login Frista (Face Recognition BPJS Kesehatan)"
 	MainWindowName  = "Frista (Face Recognition BPJS Kesehatan) 3.0.2"
 	TimeoutDuration = 30 * time.Second
-
 )
 
 // Mapping karakter ke konstanta virtual keycode
@@ -86,7 +85,7 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,PUT,DELETE,OPTIONS",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "*",
 	}))
 
 	app.Post("/ping", func(c *fiber.Ctx) error {
@@ -110,8 +109,9 @@ func main() {
 			return c.Status(500).JSON(fiber.Map{"message": "Aplikasi tidak terbuka dalam batas waktu"})
 		}
 
-		refocusApplication(LoginWindowName)
+		time.Sleep(500 * time.Millisecond)
 
+		refocusApplication(LoginWindowName)
 
 		// Input Username & Password
 
@@ -126,7 +126,7 @@ func main() {
 		if err := waitForWindow(MainWindowName, 10*time.Second); err != nil {
 			return c.Status(500).JSON(fiber.Map{"message": "Aplikasi tidak terbuka dalam batas waktu"})
 		}
-
+		time.Sleep(1000 * time.Millisecond)
 		// Refocus ke aplikasi utama & input No BPJS
 		refocusApplication(MainWindowName)
 		typeStr(request.NoBpjs)
@@ -135,11 +135,8 @@ func main() {
 	})
 
 	app.Post("/close", func(c *fiber.Ctx) error {
-		var request CloseRequest
-		if err := c.BodyParser(&request); err != nil {
-			return c.Status(422).JSON(fiber.Map{"message": "Bad Request"})
-		}
-		filePath := getExePath(request.AppName)
+
+		filePath := getExePath("frista.exe")
 		cmd := exec.Command("TASKKILL", "/IM", filepath.Base(filePath), "/F")
 		cmd.Run()
 		return c.Status(200).JSON(fiber.Map{"message": "success"})
